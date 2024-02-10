@@ -1,9 +1,5 @@
 extends Spatial
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 var slewAngle := 0.0
 var luffAngle := -30.0
 var cargo: Node = null
@@ -13,12 +9,13 @@ var joint: Node = null
 var load_instance
 var original_load_info
 
-
 onready var craneHouse = $CraneHouse
 onready var boom = $CraneHouse/Boom
 onready var hook = $Hook
 onready var boomTip = $CraneHouse/Boom/BoomTip
 onready var cargo_empty = $Hook/CargoEmpty
+onready var load_on_hook = $Load/AttachPoint
+onready var audio_move = $AudioStreamPlayer3D2
 
 export var slewSpeed := 0.3
 export var luffSpeed := 0.3
@@ -38,6 +35,8 @@ func _ready():
 func _process(delta):
 	if Input.is_action_pressed("ui_left"):
 		slewAngle += slewSpeed*delta
+	
+		
 	if Input.is_action_pressed("ui_right"):
 		slewAngle -= slewSpeed*delta
 	if Input.is_action_pressed("ui_up"):
@@ -48,9 +47,36 @@ func _process(delta):
 		cableLength += hoistSpeed*delta
 	if Input.is_action_pressed("HookUp"):
 		cableLength -= hoistSpeed*delta
+		
+	if Input.is_action_just_pressed("ui_left"):
+		audio_move.play()
+	if Input.is_action_just_released("ui_left"):
+		audio_move.stop()
+	if Input.is_action_just_pressed("ui_right"):
+		audio_move.play()
+	if Input.is_action_just_released("ui_right"):
+		audio_move.stop()	
+	if Input.is_action_just_pressed("ui_up"):
+		audio_move.play()
+	if Input.is_action_just_released("ui_up"):
+		audio_move.stop()
+	if Input.is_action_just_pressed("ui_down"):
+		audio_move.play()
+	if Input.is_action_just_released("ui_down"):
+		audio_move.stop()
+	if Input.is_action_just_pressed("HookDown"):
+		audio_move.play()
+	if Input.is_action_just_released("HookDown"):
+		audio_move.stop()
+	if Input.is_action_just_pressed("HookUp"):
+		audio_move.play()
+	if Input.is_action_just_released("HookUp"):
+		audio_move.stop()
+		
 	if Input.is_action_just_pressed("ConnectLoad"):
 		if not is_load_attached:
 			attach_load()
+			
 			print("E pressed")
 		else:
 			detach_load()
@@ -107,6 +133,15 @@ func LuffCrane():
 
 
 func attach_load():
+	
+	if load_on_hook.visible == true:
+		load_on_hook.visible = false
+		for i in load_on_hook.get_children():
+			i.set_physics_process(false)
+	else:
+		load_on_hook.visible = true
+		for i in load_on_hook.get_children():
+			i.set_physics_process(true)
 #	
 	if Globals.nearby_load:
 		load_instance = Globals.nearby_load

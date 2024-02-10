@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Load.gd" type="Script" id=1]
+[ext_resource path="res://Materials/Red.tres" type="Material" id=2]
+[ext_resource path="res://Materials/Green.tres" type="Material" id=3]
 
 [sub_resource type="SphereMesh" id=4]
 
@@ -26,6 +28,7 @@ mass = 200.0
 [node name="MeshInstance" type="MeshInstance" parent="AttachPoint"]
 transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0 )
 mesh = SubResource( 4 )
+material/0 = ExtResource( 2 )
 
 [node name="AttachJoint" type="PinJoint" parent="AttachPoint"]
 nodes/node_a = NodePath("../../RigidBody")
@@ -45,6 +48,7 @@ shape = SubResource( 1 )
 [node name="MeshInstance" type="MeshInstance" parent="RigidBody/CollisionShape"]
 transform = Transform( 1.1034, 0, 0, 0, 1.41584, 0, 0, 0, 1.66151, 0, 0.0577109, 0 )
 mesh = SubResource( 2 )
+material/0 = ExtResource( 3 )
 
 [node name="Area" type="Area" parent="RigidBody"]
 transform = Transform( 1.81344, 0, 0, 0, 0.625189, 0, 0, 0, 1.08438, 0, 0, 0 )
