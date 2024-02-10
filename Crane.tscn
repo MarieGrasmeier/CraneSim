@@ -1,0 +1,89 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Crane.gd" type="Script" id=1]
+[ext_resource path="res://CraneHook.glb" type="PackedScene" id=2]
+
+[sub_resource type="CylinderShape" id=1]
+radius = 0.581062
+
+[sub_resource type="CylinderMesh" id=2]
+
+[sub_resource type="CylinderShape" id=3]
+height = 1.18519
+radius = 0.531128
+
+[sub_resource type="CylinderMesh" id=4]
+
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 2.48691, 0.209947, 0.284895 )
+
+[sub_resource type="CubeMesh" id=6]
+
+[sub_resource type="SphereShape" id=7]
+radius = 0.185642
+
+[node name="Crane" type="Spatial"]
+script = ExtResource( 1 )
+slewSpeed = 6.0
+luffSpeed = 4.0
+hoistSpeed = 0.5
+cableStiffness = 2.0
+
+[node name="StaticBody" type="StaticBody" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
+shape = SubResource( 1 )
+
+[node name="MeshInstance" type="MeshInstance" parent="StaticBody"]
+transform = Transform( 0.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 0, 0 )
+mesh = SubResource( 2 )
+
+[node name="CraneHouse" type="KinematicBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63563, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="CraneHouse"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="CraneHouse/CollisionShape"]
+transform = Transform( 0.5, 0, 0, 0, 0.631158, 0, 0, 0, 0.5, 0, 0, 0 )
+mesh = SubResource( 4 )
+
+[node name="Boom" type="KinematicBody" parent="CraneHouse"]
+transform = Transform( 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0, 1, -0.748868, 0, 0 )
+
+[node name="CollisionShape" type="CollisionShape" parent="CraneHouse/Boom"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.37141, 0, 0 )
+shape = SubResource( 5 )
+
+[node name="MeshInstance" type="MeshInstance" parent="CraneHouse/Boom/CollisionShape"]
+transform = Transform( 2.47764, 0, 0, 0, 0.203089, 0, 0, 0, 0.288118, 0, 0, 0 )
+mesh = SubResource( 6 )
+
+[node name="BoomTip" type="Spatial" parent="CraneHouse/Boom"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.77132, 0, 0 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0210853, 2.16328, 7.84933 )
+
+[node name="Hook" type="RigidBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.96738, 0.878151, 0 )
+mass = 100.0
+contact_monitor = true
+linear_damp = 0.1
+angular_damp = 1.0
+
+[node name="CollisionShape" type="CollisionShape" parent="Hook"]
+shape = SubResource( 7 )
+
+[node name="CraneHook" parent="Hook/CollisionShape" instance=ExtResource( 2 )]
+
+[node name="CargoEmpty" type="RigidBody" parent="Hook"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.460543, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Hook/CargoEmpty"]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0 )
+
+[node name="CargoJoint" type="PinJoint" parent="Hook"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0795038, 0 )
+nodes/node_a = NodePath("..")
+nodes/node_b = NodePath(".")
